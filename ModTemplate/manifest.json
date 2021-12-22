@@ -1,8 +1,8 @@
 {
-  "filename": "ModTemplate.dll",
-  "author": "Raicuparta",
-  "name": "Mod Template",
-  "uniqueName": "Raicuparta.ModTemplate",
+  "filename": "MidgetHatchling.dll",
+  "author": "Owen_013",
+  "name": "Midget Hatchling",
+  "uniqueName": "Owen013.MidgetHatchling",
   "version": "0.1.0",
-  "owmlVersion": "2.0.0"
+  "owmlVersion": "2.2.0"
 }
