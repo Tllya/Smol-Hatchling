@@ -1,0 +1,1 @@
+Makes the hatchling shorter! Very cute. Currently, the hitbox is still normal size. The only thing this mod changes at the moment is the height of the playermodel and the camera. I plan on changing this later!
