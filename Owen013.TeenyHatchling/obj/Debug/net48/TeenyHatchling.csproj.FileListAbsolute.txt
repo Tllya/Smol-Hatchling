@@ -1,0 +1,10 @@
+C:\Users\owen\AppData\Roaming\OuterWildsModManager\OWML\Mods\Owen013.TeenyHatchling\default-config.json
+C:\Users\owen\AppData\Roaming\OuterWildsModManager\OWML\Mods\Owen013.TeenyHatchling\manifest.json
+C:\Users\owen\AppData\Roaming\OuterWildsModManager\OWML\Mods\Owen013.TeenyHatchling\TeenyHatchling.dll
+C:\Users\owen\AppData\Roaming\OuterWildsModManager\OWML\Mods\Owen013.TeenyHatchling\TeenyHatchling.pdb
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.csprojAssemblyReference.cache
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.AssemblyInfoInputs.cache
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.AssemblyInfo.cs
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.csproj.CoreCompileInputs.cache
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.dll
+C:\Users\owen\OneDrive\Documents\Outer Wilds Modding\TeenyHatchling\Owen013.TeenyHatchling\obj\Debug\net48\TeenyHatchling.pdb
