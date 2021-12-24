@@ -1,5 +1,8 @@
 ﻿using OWML.ModHelper;
 using OWML.Common;
+using Harmony;
+
+
 
 namespace TeenyHatchling
 {
@@ -16,7 +19,8 @@ namespace TeenyHatchling
         {
             // Starting here, you'll have access to OWML's mod helper.
             ModHelper.Console.WriteLine($"{nameof(TeenyHatchling)} is loaded!", MessageType.Success);
-            
+            ModHelper.HarmonyHelper.AddPostfix<GhostGrabController>("OnStartLiftPlayer", typeof(Patches), nameof(Patches.AttachPointOnStartLiftPlayer));
+
             // Example of accessing game code.
             LoadManager.OnCompleteSceneLoad += (scene, loadScene) =>
             {
@@ -40,6 +44,13 @@ namespace TeenyHatchling
                 logController._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 0.75f, 0f);
                 ModHelper.Console.WriteLine($"All done!", MessageType.Success);
             };
+        }
+    }
+    public static class Patches
+    {
+        public static void AttachPointOnStartLiftPlayer(GhostGrabController __instance)
+        {
+            __instance._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 0.75f, 0);
         }
     }
 }
