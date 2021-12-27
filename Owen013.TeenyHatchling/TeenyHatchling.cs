@@ -70,7 +70,7 @@ namespace TeenyHatchling
                 thrusterEffect.transform.localPosition = new UnityEngine.Vector3(0f, 0f, 0f);
                 playerCamera._origLocalPosition = new UnityEngine.Vector3(0f, 0.8496f, 0.15f);
                 stickRoot.transform.localPosition = new UnityEngine.Vector3(0.25f, 0f, 0.08f);
-                stickRoot.transform.localRotation = new UnityEngine.Quaternion(-0.0868f, -0.0868f, 0f, 0.9924f);
+                stickRoot.transform.localRotation = new UnityEngine.Quaternion(0f, 0.0872f, 0f, -0.9962f);
                 if (LoadManager.s_currentScene != OWScene.SolarSystem) return;
                 var cockpitController = FindObjectOfType<ShipCockpitController>();
                 var logController = FindObjectOfType<ShipLogController>();
