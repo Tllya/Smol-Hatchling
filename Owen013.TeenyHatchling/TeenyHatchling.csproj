@@ -16,10 +16,6 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" />
-    <PackageReference Include="OWML" Version="2.1.0" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="default-config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -29,5 +25,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="TeenyHatchling.csproj.user" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OuterWildsGameLibs" Version="1.1.12.125" />
+    <PackageReference Include="OWML" Version="2.1.0" />
   </ItemGroup>
 </Project>
