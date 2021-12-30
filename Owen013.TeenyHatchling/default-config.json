@@ -1,6 +1,7 @@
 {
 	"enabled": true,
 	"settings": {
-		"Enable Smol Hatchling": true
+		"Enable Smol Hatchling": true,
+		"High Pitched SFX when Small": true
 	}
 }
