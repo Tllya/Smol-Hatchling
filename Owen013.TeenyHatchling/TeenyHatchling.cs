@@ -7,7 +7,9 @@ namespace TeenyHatchling
     public class TeenyHatchling : ModBehaviour
     {
         public static bool enableHighPitch;
-        public static float sizeMultiplier;
+        public static float height;
+        public static float length;
+        public static float width;
 
         private void Start()
         {
@@ -28,8 +30,10 @@ namespace TeenyHatchling
         {
             // Whenever the config is changed, change the configuration bools and run the setup function.
             base.Configure(config);
-            enableHighPitch = config.GetSettingsValue<bool>("High Pitched SFX when Small");
-            sizeMultiplier = config.GetSettingsValue<float>("Size Multiplier");
+            enableHighPitch = config.GetSettingsValue<bool>("Change Pitch Depending on Tolness");
+            height = config.GetSettingsValue<float>("Tolness Multiplier");
+            length = config.GetSettingsValue<float>("Chub Multiplier");
+            width = config.GetSettingsValue<float>("Thiccness Multiplier");
             Setup();
         }
 
@@ -45,11 +49,11 @@ namespace TeenyHatchling
             var playerCamera = FindObjectOfType<PlayerCameraController>();
             var playerMarshmallowStick = playerBody.transform.Find("RoastingSystem").transform.Find("Stick_Root");
             // Smolify playermodel, camera, thrusters, and marshmallow stick.
-            playerModel.transform.localScale = new UnityEngine.Vector3(0.1f, sizeMultiplier / 10, 0.1f);
-            playerThruster.transform.localScale = new UnityEngine.Vector3(1f, sizeMultiplier, 1f);
-            playerThruster.transform.localPosition = new UnityEngine.Vector3(0f, -1 + sizeMultiplier, 0f);
-            playerCamera._origLocalPosition = new UnityEngine.Vector3(0f, -1f + 1.8496f * sizeMultiplier, 0.15f);
-            playerMarshmallowStick.transform.localPosition = new UnityEngine.Vector3(0.25f, -1.8496f + 1.8496f * sizeMultiplier, 0.08f);
+            playerModel.transform.localScale = new UnityEngine.Vector3(width / 10, height / 10, length / 10);
+            playerThruster.transform.localScale = new UnityEngine.Vector3(width, height, length);
+            playerThruster.transform.localPosition = new UnityEngine.Vector3(0f, -1 + height, 0f);
+            playerCamera._origLocalPosition = new UnityEngine.Vector3(0f, -1f + 1.8496f * height, 0.15f * length);
+            playerMarshmallowStick.transform.localPosition = new UnityEngine.Vector3(0.25f, -1.8496f + 1.8496f * height, 0.08f + 0.15f * length);
             // playerMarshmallowStick.transform.localRotation = new UnityEngine.Quaternion(0f, 0.0872f, 0f, -0.9962f);
             // Raise ship attach points, but only if the scene is the Solar System.
             if (LoadManager.s_currentScene == OWScene.SolarSystem)
@@ -57,23 +61,23 @@ namespace TeenyHatchling
                 var shipCockpit = FindObjectOfType<ShipCockpitController>();
                 var shipLog = FindObjectOfType<ShipLogController>();
                 ModHelper.Events.Unity.FireInNUpdates(() =>
-                    shipCockpit._origAttachPointLocalPos = new UnityEngine.Vector3(0f, 2.1849f - 1.8496f * sizeMultiplier, 4.2307f),
+                    shipCockpit._origAttachPointLocalPos = new UnityEngine.Vector3(0f, 2.1849f - 1.8496f * height, 4.2307f - 0.15f * length),
                     60);
-                shipLog._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 1.8496f - 1.8496f * sizeMultiplier, 0f);
+                shipLog._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 1.8496f - 1.8496f * height, 0f - 0.15f * length);
             }
             // If pitch shift is enabled then turn them on.
             if (enableHighPitch)
             {
                 var playerSounds = FindObjectOfType<PlayerAudioController>();
                 var playerBreathing = FindObjectOfType<PlayerBreathingAudio>();
-                playerSounds._oneShotSleepingAtCampfireSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
-                playerSounds._oneShotSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
-                playerBreathing._asphyxiationSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
-                playerBreathing._breathingLowOxygenSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
-                playerBreathing._breathingSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
-                playerBreathing._drowningSource.pitch = sizeMultiplier / sizeMultiplier / sizeMultiplier;
+                playerSounds._oneShotSleepingAtCampfireSource.pitch = height / height / height;
+                playerSounds._oneShotSource.pitch = height / height / height;
+                playerBreathing._asphyxiationSource.pitch = height / height / height;
+                playerBreathing._breathingLowOxygenSource.pitch = height / height / height;
+                playerBreathing._breathingSource.pitch = height / height / height;
+                playerBreathing._drowningSource.pitch = height / height / height;
             }
-            // If pitch shift is enabled then turn them off just in case they're already on.
+            // If pitch shift is disabled then set pitches to normal.
             else
             {
                 var playerSounds = FindObjectOfType<PlayerAudioController>();
@@ -92,7 +96,7 @@ namespace TeenyHatchling
             public static void AttachPointOnStartLiftPlayer(GhostGrabController __instance)
             {
                 // If hatchling is smol, then use raised attach point.
-                __instance._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 1.8496f - 1.8496f * sizeMultiplier, 0);
+                __instance._attachPoint._attachOffset = new UnityEngine.Vector3(0f, 1.8496f - 1.8496f * height, 0.15f - 0.15f * length);
             }
         }
     }

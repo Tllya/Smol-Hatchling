@@ -1,7 +1,9 @@
 {
 	"enabled": true,
 	"settings": {
-		"Size Multiplier": 0.66,
-		"Change Pitch Depending on Height": true
+		"Tolness Multiplier": 0.66,
+		"Chub Multiplier": 1,
+		"Thiccness Multiplier": 1,
+		"Change Pitch Depending on Tolness": true
 	}
 }
