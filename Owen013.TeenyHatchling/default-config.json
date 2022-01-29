@@ -1,8 +1,8 @@
 {
 	"enabled": true,
 	"settings": {
-		"Thiccness Multiplier": 1,
 		"Tolness Multiplier": 0.5,
+		"Thiccness Multiplier": 1,
 		"Chub Multiplier": 1,
 		"Change Pitch Depending on Tolness": true
 	}

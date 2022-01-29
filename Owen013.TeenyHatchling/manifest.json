@@ -1,8 +1,8 @@
 {
-  "filename": "TeenyHatchling.dll",
+  "filename": "SmolHatchling.dll",
   "author": "Owen_013",
-  "name": "Teeny Hatchling",
+  "name": "Smol Hatchling",
   "uniqueName": "Owen013.TeenyHatchling",
-  "version": "0.0.8",
-  "owmlVersion": "2.1.0"
+  "version": "0.0.9",
+  "owmlVersion": "2.3.1"
 }
