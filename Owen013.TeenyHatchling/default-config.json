@@ -1,9 +1,20 @@
 {
 	"enabled": true,
 	"settings": {
-		"Tolness Multiplier": 0.5,
-		"Thiccness Multiplier": 1,
-		"Chub Multiplier": 1,
-		"Change Pitch Depending on Tolness": true
+		//"Height (Default 1)": {
+		//	"type": "slider",
+		//	"value": 0.5,
+		//	"min": 0.0,
+		//	"max": 10.0
+		//},
+		//"Radius (Default 1)": {
+		//	"type": "slider",
+		//	"value": 1.0,
+		//	"min": 0.0,
+		//	"max": 10.0
+		//},
+		"Height (Default 1)": 0.5,
+		"Radius (Default 1)": 1,
+		"Change Pitch Depending on Height": true
 	}
 }
