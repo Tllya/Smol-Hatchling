@@ -101,8 +101,10 @@ namespace SmolHatchling
         {
             // Resize collider
             playerCollider.height = 2f * playerScale.y;
-            playerCollider.radius = (playerScale.x + playerScale.z) / 2f * 0.5f;
+            float targetRadius = (playerScale.x + playerScale.z) / 2f * 0.5f;
+            playerCollider.radius = Mathf.Min(playerCollider.height / 2, targetRadius);
             playerCollider.center = new Vector3(0f, playerScale.y - 1f, 0f);
+            ModHelper.Console.WriteLine($"Height: {playerCollider.height} \n Radius: {playerCollider.radius}");
             // Smolify/beegify/regularify playermodel, camera, thrusters, and marshmallow stick.
             playerModel.transform.localScale = playerScale / 10f;
             playerThruster.transform.localScale = playerScale;
