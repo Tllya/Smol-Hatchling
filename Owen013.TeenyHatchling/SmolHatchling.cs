@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using OWML.ModHelper;
 using OWML.ModHelper.Events;
-using OWML.Utils;
 using OWML.Common;
 
 namespace SmolHatchling
@@ -9,23 +8,23 @@ namespace SmolHatchling
     public class SmolHatchling : ModBehaviour
     {
         // Config vars
-        public float height, radius;
+        float height, radius;
         public bool enableHighPitch;
 
         // Mod vars
         public static SmolHatchling Instance;
-        public OWScene scene;
+        OWScene scene;
         public static Vector3 playerScale;
-        public PlayerBody playerBody;
-        public PlayerCameraController playerCamera;
-        public PlayerAudioController audioController;
-        public static PlayerBreathingAudio breathingAudio;
-        public CapsuleCollider playerCollider;
-        public ShipCockpitController cockpitController;
-        public ShipLogController logController;
-        public PlayerCloneController cloneController;
-        public EyeMirrorController mirrorController;
-        public GameObject playerModel, playerThruster, playerMarshmallowStick;
+        PlayerBody playerBody;
+        PlayerCameraController playerCamera;
+        PlayerAudioController audioController;
+        static PlayerBreathingAudio breathingAudio;
+        CapsuleCollider playerCollider;
+        ShipCockpitController cockpitController;
+        ShipLogController logController;
+        PlayerCloneController cloneController;
+        EyeMirrorController mirrorController;
+        GameObject playerModel, playerThruster, playerMarshmallowStick;
 
         private void Awake()
         {
@@ -100,22 +99,22 @@ namespace SmolHatchling
         public void ChangeSize()
         {
             // Resize collider
-            playerCollider.height = 2f * playerScale.y;
-            float targetRadius = (playerScale.x + playerScale.z) / 2f * 0.5f;
+            playerCollider.height = 2 * playerScale.y;
+            float targetRadius = (playerScale.x + playerScale.z) / 2 * 0.5f;
             playerCollider.radius = Mathf.Min(playerCollider.height / 2, targetRadius);
-            playerCollider.center = new Vector3(0f, playerScale.y - 1f, 0f);
+            playerCollider.center = new Vector3(0, playerScale.y - 1, 0);
             ModHelper.Console.WriteLine($"Height: {playerCollider.height} \n Radius: {playerCollider.radius}");
             // Smolify/beegify/regularify playermodel, camera, thrusters, and marshmallow stick.
-            playerModel.transform.localScale = playerScale / 10f;
+            playerModel.transform.localScale = playerScale / 10;
             playerThruster.transform.localScale = playerScale;
-            playerThruster.transform.localPosition = new Vector3(0f, -1f + playerScale.y, 0f);
-            playerCamera._origLocalPosition = new Vector3(0f, -1f + 1.8496f * playerScale.y, 0.15f * playerScale.z);
+            playerThruster.transform.localPosition = new Vector3(0f, -1 + playerScale.y, 0);
+            playerCamera._origLocalPosition = new Vector3(0f, -1 + 1.8496f * playerScale.y, 0.15f * playerScale.z);
             playerMarshmallowStick.transform.localPosition =
                 new Vector3(0.25f, -1.8496f + 1.8496f * playerScale.y, 0.08f - 0.15f + 0.15f * playerScale.z);
             // If pitch shift is enabled, then crank that pitch.
             if (enableHighPitch)
             {
-                float pitch = 0.5f * Mathf.Pow(playerScale.y, -1f) + 0.5f;
+                float pitch = 0.5f * Mathf.Pow(playerScale.y, -1) + 0.5f;
                 audioController._oneShotSleepingAtCampfireSource.pitch = pitch;
                 audioController._oneShotSource.pitch = pitch;
                 breathingAudio._asphyxiationSource.pitch = pitch;
@@ -126,25 +125,25 @@ namespace SmolHatchling
             // If pitch shift is disabled then set pitches to normal.
             else
             {
-                audioController._oneShotSleepingAtCampfireSource.pitch = 1f;
-                audioController._oneShotSource.pitch = 1f;
-                breathingAudio._asphyxiationSource.pitch = 1f;
-                breathingAudio._breathingLowOxygenSource.pitch = 1f;
-                breathingAudio._breathingSource.pitch = 1f;
-                breathingAudio._drowningSource.pitch = 1f;
+                audioController._oneShotSleepingAtCampfireSource.pitch = 1;
+                audioController._oneShotSource.pitch = 1;
+                breathingAudio._asphyxiationSource.pitch = 1;
+                breathingAudio._breathingLowOxygenSource.pitch = 1;
+                breathingAudio._breathingSource.pitch = 1;
+                breathingAudio._drowningSource.pitch = 1;
             }
             // Offset attachments for pilot seat and ship log, but only if the scene is the Solar System!
             if (scene == OWScene.SolarSystem)
             {
                 cockpitController._origAttachPointLocalPos =
-                    new Vector3(0f, 2.1849f - 1.8496f * playerScale.y, 4.2307f + 0.15f - 0.15f * playerScale.z);
+                    new Vector3(0, 2.1849f - 1.8496f * playerScale.y, 4.2307f + 0.15f - 0.15f * playerScale.z);
                 logController._attachPoint._attachOffset = new Vector3(0f, 1.8496f - 1.8496f * playerScale.y, 0.15f - 0.15f * playerScale.z);
             }
             else if (scene == OWScene.EyeOfTheUniverse)
             {
-                cloneController._playerVisuals.transform.localScale = playerScale / 10f;
+                cloneController._playerVisuals.transform.localScale = playerScale / 10;
                 cloneController._signal._owAudioSource.pitch = breathingAudio._oneShotSource.pitch;
-                mirrorController._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10f;
+                mirrorController._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10;
             }
         }
     }
@@ -161,23 +160,23 @@ namespace SmolHatchling
             Vector3 playerScale = SmolHatchling.playerScale;
             // Offset attachment so that camera is where it normally is
             __instance._attachPoint._attachOffset =
-                new Vector3(0f, 1.8496f - 1.8496f * playerScale.y, 0.15f - 0.15f * playerScale.z);
+                new Vector3(0, 1.8496f - 1.8496f * playerScale.y, 0.15f - 0.15f * playerScale.z);
         }
 
         public static void EyeCloneStart(PlayerCloneController __instance)
         {
             Vector3 playerScale = SmolHatchling.playerScale;
             float pitch;
-            __instance._playerVisuals.transform.localScale = playerScale / 10f;
+            __instance._playerVisuals.transform.localScale = playerScale / 10;
             if (SmolHatchling.Instance.enableHighPitch) pitch = 0.5f * Mathf.Pow(playerScale.y, -1f) + 0.5f;
-            else pitch = 1f;
+            else pitch = 1;
             __instance._signal._owAudioSource.pitch = pitch;
         }
 
         public static void EyeMirrorStart(EyeMirrorController __instance)
         {
             Vector3 playerScale = SmolHatchling.playerScale;
-            __instance._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10f;
+            __instance._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10;
         }
     }
 }

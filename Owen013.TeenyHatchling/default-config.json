@@ -1,18 +1,6 @@
 {
 	"enabled": true,
 	"settings": {
-		//"Height (Default 1)": {
-		//	"type": "slider",
-		//	"value": 0.5,
-		//	"min": 0.0,
-		//	"max": 10.0
-		//},
-		//"Radius (Default 1)": {
-		//	"type": "slider",
-		//	"value": 1.0,
-		//	"min": 0.0,
-		//	"max": 10.0
-		//},
 		"Height (Default 1)": 0.5,
 		"Radius (Default 1)": 1,
 		"Change Pitch Depending on Height": true
