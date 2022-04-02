@@ -1,22 +1,32 @@
-﻿using UnityEngine;
+﻿using System.Xml;
+using UnityEngine;
 using OWML.ModHelper;
-using OWML.ModHelper.Events;
 using OWML.Common;
 
 namespace SmolHatchling
 {
+    public class SmolHatchlingAPI
+    {
+        public float GetAnimSpeed()
+        {
+            return SmolHatchling.animSpeed;
+        }
+    }
+
     public class SmolHatchling : ModBehaviour
     {
         // Config vars
         float height, radius;
-        public bool enableHighPitch;
+        public static float animSpeed;
+        public bool enableHighPitch, enableStory;
 
         // Mod vars
         public static SmolHatchling Instance;
         OWScene scene;
         public static Vector3 playerScale;
         PlayerBody playerBody;
-        PlayerCameraController playerCamera;
+        PlayerCameraController cameraController;
+        PlayerAnimController animController;
         PlayerAudioController audioController;
         static PlayerBreathingAudio breathingAudio;
         CapsuleCollider playerCollider;
@@ -25,6 +35,7 @@ namespace SmolHatchling
         PlayerCloneController cloneController;
         EyeMirrorController mirrorController;
         GameObject playerModel, playerThruster, playerMarshmallowStick;
+        AssetBundle assets;
 
         private void Awake()
         {
@@ -33,11 +44,14 @@ namespace SmolHatchling
 
         private void Start()
         {
+            // Load assets
+            assets = ModHelper.Assets.LoadBundle("Assets/textassets");
             // Create patch for when character starts
             ModHelper.HarmonyHelper.AddPostfix<PlayerCharacterController>(
                 "Start",
                 typeof(Patches),
                 nameof(Patches.CharacterStart));
+            ModHelper.Console.WriteLine($"{nameof(SmolHatchling)} is ready to go!", MessageType.Success);
             // Create ghost grabbing patch for when player is picked up by Stranger.
             ModHelper.HarmonyHelper.AddPostfix<GhostGrabController>(
                 "OnStartLiftPlayer",
@@ -56,6 +70,11 @@ namespace SmolHatchling
             ModHelper.Console.WriteLine($"{nameof(SmolHatchling)} is ready to go!", MessageType.Success);
         }
 
+        public override object GetApi()
+        {
+            return new SmolHatchlingAPI();
+        }
+
         // Runs whenever the config is changed
         public override void Configure(IModConfig config)
         {
@@ -63,6 +82,7 @@ namespace SmolHatchling
             height = config.GetSettingsValue<float>("Height (Default 1)");
             radius = config.GetSettingsValue<float>("Radius (Default 1)");
             enableHighPitch = config.GetSettingsValue<bool>("Change Pitch Depending on Height");
+            enableStory = config.GetSettingsValue<bool>("Enable Story");
             Setup();
         }
 
@@ -71,9 +91,16 @@ namespace SmolHatchling
             scene = LoadManager.s_currentScene;
             if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
             {
-                playerScale = new Vector3(radius, height, radius);
+                if (enableStory)
+                {
+                    playerScale = new Vector3(0.75f, 0.5f, 0.75f);
+                    ModHelper.Events.Unity.FireInNUpdates(() => StorySetup(), 60);
+                }
+                else playerScale = new Vector3(radius, height, radius);
+                animSpeed = Mathf.Pow(playerScale.z, -1);
                 playerBody = FindObjectOfType<PlayerBody>();
-                playerCamera = FindObjectOfType<PlayerCameraController>();
+                cameraController = FindObjectOfType<PlayerCameraController>();
+                animController = FindObjectOfType<PlayerAnimController>();
                 playerCollider = playerBody.GetComponent<CapsuleCollider>();
                 playerModel = playerBody.transform.Find("Traveller_HEA_Player_v2").gameObject;
                 playerThruster = playerBody.transform.Find("PlayerVFX").gameObject;
@@ -104,11 +131,13 @@ namespace SmolHatchling
             playerCollider.radius = Mathf.Min(playerCollider.height / 2, targetRadius);
             playerCollider.center = new Vector3(0, playerScale.y - 1, 0);
             ModHelper.Console.WriteLine($"Height: {playerCollider.height} \n Radius: {playerCollider.radius}");
+            // Change speed
+            animController._animator.speed = animSpeed;
             // Smolify/beegify/regularify playermodel, camera, thrusters, and marshmallow stick.
             playerModel.transform.localScale = playerScale / 10;
             playerThruster.transform.localScale = playerScale;
             playerThruster.transform.localPosition = new Vector3(0f, -1 + playerScale.y, 0);
-            playerCamera._origLocalPosition = new Vector3(0f, -1 + 1.8496f * playerScale.y, 0.15f * playerScale.z);
+            cameraController._origLocalPosition = new Vector3(0f, -1 + 1.8496f * playerScale.y, 0.15f * playerScale.z);
             playerMarshmallowStick.transform.localPosition =
                 new Vector3(0.25f, -1.8496f + 1.8496f * playerScale.y, 0.08f - 0.15f + 0.15f * playerScale.z);
             // If pitch shift is enabled, then crank that pitch.
@@ -146,11 +175,57 @@ namespace SmolHatchling
                 mirrorController._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10;
             }
         }
+
+        public void StorySetup()
+        {
+            var dialogueTrees = FindObjectsOfType<CharacterDialogueTree>();
+            for (var i = 0; i < dialogueTrees.Length; ++i)
+            {
+                CharacterDialogueTree dialogueTree = dialogueTrees[i];
+                string dialogueName = dialogueTree._characterName;
+                TextAsset textAsset = assets.LoadAsset<TextAsset>(dialogueName);
+                if (!assets.Contains(dialogueName)) continue;
+                dialogueTree.SetTextXml(textAsset);
+                AddTranslations(textAsset.ToString());
+                dialogueTree.OnDialogueConditionsReset();
+                ModHelper.Console.WriteLine($"Replaced dialogue for {dialogueName}");
+            }
+        }
+
+        private void AddTranslations(string xml)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(xml);
+            XmlNode xmlNode = xmlDocument.SelectSingleNode("DialogueTree");
+            XmlNodeList xmlNodeList = xmlNode.SelectNodes("DialogueNode");
+            string NameField = xmlNode.SelectSingleNode("NameField").InnerText;
+            var translationTable = TextTranslation.Get().m_table.theTable;
+            translationTable[NameField] = NameField;
+            foreach (object obj in xmlNodeList)
+            {
+                XmlNode xmlNode2 = (XmlNode)obj;
+                var name = xmlNode2.SelectSingleNode("Name").InnerText;
+
+                XmlNodeList xmlText = xmlNode2.SelectNodes("Dialogue/Page");
+                foreach (object Page in xmlText)
+                {
+                    XmlNode pageData = (XmlNode)Page;
+                    translationTable[name + pageData.InnerText] = pageData.InnerText;
+                }
+                xmlText = xmlNode2.SelectNodes("DialogueOptionsList/DialogueOption/Text");
+                foreach (object Page in xmlText)
+                {
+                    XmlNode pageData = (XmlNode)Page;
+                    translationTable[NameField + name + pageData.InnerText] = pageData.InnerText;
+
+                }
+            }
+        }
     }
 
     public static class Patches
     {
-        public static void CharacterStart(PlayerCharacterController __instance)
+        public static void CharacterStart()
         {
             SmolHatchling.Instance.Setup();
         }
