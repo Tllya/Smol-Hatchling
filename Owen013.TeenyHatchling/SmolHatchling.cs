@@ -86,7 +86,7 @@ namespace SmolHatchling
             height = config.GetSettingsValue<float>("Height (Default 1)");
             radius = config.GetSettingsValue<float>("Radius (Default 1)");
             enableHighPitch = config.GetSettingsValue<bool>("Change Pitch Depending on Height");
-            //enableStory = config.GetSettingsValue<bool>("Enable Story");
+            enableStory = config.GetSettingsValue<bool>("Enable Story");
             Setup();
         }
 
@@ -95,13 +95,12 @@ namespace SmolHatchling
             scene = LoadManager.s_currentScene;
             if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
             {
-                //if (enableStory)
-                //{
-                //    playerScale = new Vector3(0.75f, 0.5f, 0.75f);
-                //    ModHelper.Events.Unity.FireInNUpdates(() => ChangeDialogueTree(null), 60);
-                //}
-                //else
-                playerScale = new Vector3(radius, height, radius);
+                if (enableStory)
+                {
+                    playerScale = new Vector3(0.75f, 0.5f, 0.75f);
+                    ModHelper.Events.Unity.FireInNUpdates(() => ChangeDialogueTree(null), 60);
+                }
+                else playerScale = new Vector3(radius, height, radius);
                 animSpeed = Mathf.Pow(playerScale.z, -1);
                 playerBody = FindObjectOfType<PlayerBody>();
                 cameraController = FindObjectOfType<PlayerCameraController>();
@@ -271,9 +270,7 @@ namespace SmolHatchling
 
         public static void ChertDialogueSwapped(ChertDialogueSwapper __instance)
         {
-            //if (SmolHatchling.Instance.enableStory) SmolHatchling.Instance.ChangeDialogueTree("Chert");
+            if (SmolHatchling.Instance.enableStory) SmolHatchling.Instance.ChangeDialogueTree("Chert");
         }
     }
 }
-
-// add to default-config.json: ` , "Enable Story": false`
