@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1353945622
+CRC: 2703460480
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1f5636c6a0eb8c59579dd110f48b1a35
+    Hash: 4e444119821fb953181476dd4f7479a4
   TypeTreeHash:
     serializedVersion: 2
     Hash: 5ad585dd02dfb5016c0dad519eab8f49
@@ -13,9 +13,19 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/AssetBundles/Tektite_ImpactCrater.txt
+- Assets/AssetBundles/Gabbro_1.txt
+- Assets/AssetBundles/Riebeck.txt
+- Assets/AssetBundles/Gabbro_3T.txt
 - Assets/AssetBundles/Galena.txt
+- Assets/AssetBundles/Gabbro_2F.txt
+- Assets/AssetBundles/Gabbro_3F.txt
+- Assets/AssetBundles/Esker.txt
 - Assets/AssetBundles/Hornfels.txt
 - Assets/AssetBundles/Slate.txt
+- Assets/AssetBundles/Gabbro_merge.txt
 - Assets/AssetBundles/Mica.txt
 - Assets/AssetBundles/Tephra.txt
+- Assets/AssetBundles/Tuff.txt
+- Assets/AssetBundles/Gabbro_2T.txt
 Dependencies: []

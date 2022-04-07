@@ -1,7 +1,8 @@
-﻿using System.Xml;
-using UnityEngine;
+﻿using OWML.Common;
 using OWML.ModHelper;
-using OWML.Common;
+using System.Collections.Generic;
+using System.Xml;
+using UnityEngine;
 
 namespace SmolHatchling
 {
@@ -51,7 +52,6 @@ namespace SmolHatchling
                 "Start",
                 typeof(Patches),
                 nameof(Patches.CharacterStart));
-            ModHelper.Console.WriteLine($"{nameof(SmolHatchling)} is ready to go!", MessageType.Success);
             // Create ghost grabbing patch for when player is picked up by Stranger.
             ModHelper.HarmonyHelper.AddPostfix<GhostGrabController>(
                 "OnStartLiftPlayer",
@@ -67,6 +67,10 @@ namespace SmolHatchling
                 "Start",
                 typeof(Patches),
                 nameof(Patches.EyeMirrorStart));
+            ModHelper.HarmonyHelper.AddPostfix<ChertDialogueSwapper>(
+                "SelectMood",
+                typeof(Patches),
+                nameof(Patches.ChertDialogueSwapped));
             ModHelper.Console.WriteLine($"{nameof(SmolHatchling)} is ready to go!", MessageType.Success);
         }
 
@@ -82,7 +86,7 @@ namespace SmolHatchling
             height = config.GetSettingsValue<float>("Height (Default 1)");
             radius = config.GetSettingsValue<float>("Radius (Default 1)");
             enableHighPitch = config.GetSettingsValue<bool>("Change Pitch Depending on Height");
-            enableStory = config.GetSettingsValue<bool>("Enable Story");
+            //enableStory = config.GetSettingsValue<bool>("Enable Story");
             Setup();
         }
 
@@ -91,12 +95,13 @@ namespace SmolHatchling
             scene = LoadManager.s_currentScene;
             if (scene == OWScene.SolarSystem || scene == OWScene.EyeOfTheUniverse)
             {
-                if (enableStory)
-                {
-                    playerScale = new Vector3(0.75f, 0.5f, 0.75f);
-                    ModHelper.Events.Unity.FireInNUpdates(() => StorySetup(), 60);
-                }
-                else playerScale = new Vector3(radius, height, radius);
+                //if (enableStory)
+                //{
+                //    playerScale = new Vector3(0.75f, 0.5f, 0.75f);
+                //    ModHelper.Events.Unity.FireInNUpdates(() => ChangeDialogueTree(null), 60);
+                //}
+                //else
+                playerScale = new Vector3(radius, height, radius);
                 animSpeed = Mathf.Pow(playerScale.z, -1);
                 playerBody = FindObjectOfType<PlayerBody>();
                 cameraController = FindObjectOfType<PlayerCameraController>();
@@ -136,7 +141,7 @@ namespace SmolHatchling
             // Smolify/beegify/regularify playermodel, camera, thrusters, and marshmallow stick.
             playerModel.transform.localScale = playerScale / 10;
             playerThruster.transform.localScale = playerScale;
-            playerThruster.transform.localPosition = new Vector3(0f, -1 + playerScale.y, 0);
+            playerThruster.transform.localPosition = new Vector3(0, -1 + playerScale.y, 0);
             cameraController._origLocalPosition = new Vector3(0f, -1 + 1.8496f * playerScale.y, 0.15f * playerScale.z);
             playerMarshmallowStick.transform.localPosition =
                 new Vector3(0.25f, -1.8496f + 1.8496f * playerScale.y, 0.08f - 0.15f + 0.15f * playerScale.z);
@@ -176,26 +181,36 @@ namespace SmolHatchling
             }
         }
 
-        public void StorySetup()
+        public void ChangeDialogueTree(string dialogueName)
         {
             var dialogueTrees = FindObjectsOfType<CharacterDialogueTree>();
+            CharacterDialogueTree dialogueTree;
+            List<string> changedCharacters = new List<string>();
             for (var i = 0; i < dialogueTrees.Length; ++i)
             {
-                CharacterDialogueTree dialogueTree = dialogueTrees[i];
-                string dialogueName = dialogueTree._characterName;
-                TextAsset textAsset = assets.LoadAsset<TextAsset>(dialogueName);
-                if (!assets.Contains(dialogueName)) continue;
+                dialogueTree = dialogueTrees[i];
+                string assetName = dialogueTree._xmlCharacterDialogueAsset.name;
+                TextAsset textAsset = assets.LoadAsset<TextAsset>(assetName);
+                if (!assets.Contains(assetName) || dialogueName != null && dialogueName != dialogueTree._characterName) continue;
                 dialogueTree.SetTextXml(textAsset);
                 AddTranslations(textAsset.ToString());
                 dialogueTree.OnDialogueConditionsReset();
-                ModHelper.Console.WriteLine($"Replaced dialogue for {dialogueName}");
+                changedCharacters.Add(dialogueTree._characterName);
+            }
+            string changedList;
+            if (changedCharacters.Count == 0)
+                ModHelper.Console.WriteLine("No dialogues replaced");
+            else
+            {
+                changedList = string.Join(", ", changedCharacters);
+                ModHelper.Console.WriteLine(string.Format("Dialogue replaced for: {0}.", changedList), MessageType.Success);
             }
         }
 
-        private void AddTranslations(string xml)
+        private void AddTranslations(string textAsset)
         {
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(xml);
+            xmlDocument.LoadXml(textAsset);
             XmlNode xmlNode = xmlDocument.SelectSingleNode("DialogueTree");
             XmlNodeList xmlNodeList = xmlNode.SelectNodes("DialogueNode");
             string NameField = xmlNode.SelectSingleNode("NameField").InnerText;
@@ -253,5 +268,12 @@ namespace SmolHatchling
             Vector3 playerScale = SmolHatchling.playerScale;
             __instance._mirrorPlayer.transform.Find("Traveller_HEA_Player_v2 (2)").localScale = playerScale / 10;
         }
+
+        public static void ChertDialogueSwapped(ChertDialogueSwapper __instance)
+        {
+            //if (SmolHatchling.Instance.enableStory) SmolHatchling.Instance.ChangeDialogueTree("Chert");
+        }
     }
 }
+
+// add to default-config.json: ` , "Enable Story": false`
