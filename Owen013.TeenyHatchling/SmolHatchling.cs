@@ -12,12 +12,20 @@ namespace SmolHatchling
         {
             return SmolHatchling.animSpeed;
         }
+        public float GetHeight()
+        {
+            return SmolHatchling.height;
+        }
+        public float GetRadius()
+        {
+            return SmolHatchling.radius;
+        }
     }
 
     public class SmolHatchling : ModBehaviour
     {
         // Config vars
-        float height, radius;
+        public static float height, radius;
         public static float animSpeed;
         public bool enableHighPitch, enableStory;
 
